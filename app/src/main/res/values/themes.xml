@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.AnimeAwards" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">#6750A4</item>
+        <item name="colorPrimaryDark">#4F378B</item>
+        <item name="colorAccent">#D0BCFF</item>
+    </style>
+</resources>
