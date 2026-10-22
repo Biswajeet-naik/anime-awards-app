@@ -12,23 +12,41 @@ class CategoryDetailActivity : AppCompatActivity() {
 
     private lateinit var category: String
     private lateinit var listView: ListView
-    private var animeList: List<String> = emptyList()
+    private var candidates: List<Anime> = emptyList()
+    private var genre: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_detail)
 
         category = intent.getStringExtra("category") ?: "Award"
+        genre = Storage.GENRE_CATEGORIES[category]
         findViewById<TextView>(R.id.categoryTitle).text = category
 
-        listView = findViewById(R.id.animeChoiceList)
-        animeList = Storage.getAnime(this)
+        val all = Storage.getAnime(this)
+        val g = genre
+        candidates = if (g != null) all.filter { g in it.genres } else all
+
+        val hint: TextView = findViewById(R.id.hintText)
+        hint.text = if (g != null) {
+            "Every $g anime you added is nominated automatically. Tap one to pick the winner."
+        } else {
+            "Tap an anime to nominate it or pick the winner."
+        }
 
         val emptyText: TextView = findViewById(R.id.emptyText)
-        emptyText.visibility = if (animeList.isEmpty()) View.VISIBLE else View.GONE
+        if (candidates.isEmpty()) {
+            emptyText.text = if (g != null) {
+                "No $g anime yet. Add some with Search & Add."
+            } else {
+                "No anime yet. Add some with Search & Add."
+            }
+            emptyText.visibility = View.VISIBLE
+        }
 
+        listView = findViewById(R.id.animeChoiceList)
         listView.setOnItemClickListener { _, _, position, _ ->
-            showOptions(animeList[position])
+            showOptions(candidates[position])
         }
 
         refresh()
@@ -37,21 +55,36 @@ class CategoryDetailActivity : AppCompatActivity() {
     private fun refresh() {
         val nominees = Storage.getNominees(this, category)
         val winner = Storage.getWinner(this, category)
-        val rows = animeList.map { title ->
+        val rows = candidates.map { anime ->
             when {
-                title == winner -> "🏆  $title  (Winner)"
-                title in nominees -> "⭐  $title  (Nominee)"
-                else -> title
+                anime.id == winner?.id -> "🏆  ${anime.title}  (Winner)"
+                genre != null || anime.id in nominees -> "⭐  ${anime.title}  (Nominee)"
+                else -> anime.title
             }
         }
         listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, rows)
     }
 
-    private fun showOptions(title: String) {
-        val nominees = Storage.getNominees(this, category)
+    private fun showOptions(anime: Anime) {
         val winner = Storage.getWinner(this, category)
-        val isNominee = title in nominees
-        val isWinner = title == winner
+        val isWinner = winner?.id == anime.id
+
+        // Genre categories: everyone is already nominated, so only the winner can be chosen.
+        if (genre != null) {
+            val options = arrayOf(if (isWinner) "Remove winner status" else "Make winner")
+            AlertDialog.Builder(this)
+                .setTitle(anime.title)
+                .setItems(options) { _, _ ->
+                    Storage.setWinner(this, category, if (isWinner) null else anime.id)
+                    refresh()
+                }
+                .show()
+            return
+        }
+
+        // Other categories: nominate manually, then pick a winner.
+        val nominees = Storage.getNominees(this, category).toMutableList()
+        val isNominee = anime.id in nominees
 
         val options = arrayOf(
             if (isNominee) "Remove nomination" else "Nominate",
@@ -59,15 +92,15 @@ class CategoryDetailActivity : AppCompatActivity() {
         )
 
         AlertDialog.Builder(this)
-            .setTitle(title)
+            .setTitle(anime.title)
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> {
                         if (isNominee) {
-                            nominees.remove(title)
+                            nominees.remove(anime.id)
                             if (isWinner) Storage.setWinner(this, category, null)
                         } else {
-                            nominees.add(title)
+                            nominees.add(anime.id)
                         }
                         Storage.saveNominees(this, category, nominees)
                     }
@@ -76,10 +109,10 @@ class CategoryDetailActivity : AppCompatActivity() {
                             Storage.setWinner(this, category, null)
                         } else {
                             if (!isNominee) {
-                                nominees.add(title)
+                                nominees.add(anime.id)
                                 Storage.saveNominees(this, category, nominees)
                             }
-                            Storage.setWinner(this, category, title)
+                            Storage.setWinner(this, category, anime.id)
                         }
                     }
                 }

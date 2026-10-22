@@ -13,17 +13,16 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/hintText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Tap an anime to nominate it or pick the winner." />
+        android:layout_marginTop="4dp" />
 
     <TextView
         android:id="@+id/emptyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="No anime yet. Add some on the first screen."
         android:visibility="gone" />
 
     <ListView

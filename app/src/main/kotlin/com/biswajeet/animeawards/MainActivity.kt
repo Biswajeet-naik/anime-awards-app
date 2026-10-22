@@ -1,102 +1,48 @@
 package com.biswajeet.animeawards
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
-    private val animeList = mutableListOf<String>()
+    private val animeList = mutableListOf<Anime>()
     private lateinit var adapter: AnimeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadAnime()
-
-        val input: EditText = findViewById(R.id.animeInput)
-        val addButton: Button = findViewById(R.id.addButton)
-        val awardsButton: Button = findViewById(R.id.awardsButton)
         val recycler: RecyclerView = findViewById(R.id.animeRecycler)
+        val searchButton: Button = findViewById(R.id.searchButton)
+        val awardsButton: Button = findViewById(R.id.awardsButton)
 
-        adapter = AnimeAdapter(animeList) { position ->
-            animeList.removeAt(position)
-            adapter.notifyItemRemoved(position)
-            adapter.notifyItemRangeChanged(position, animeList.size - position)
-            saveAnime()
+        adapter = AnimeAdapter(animeList, "✕") { anime ->
+            val index = animeList.indexOfFirst { it.id == anime.id }
+            if (index >= 0) {
+                animeList.removeAt(index)
+                adapter.notifyItemRemoved(index)
+                Storage.saveAnime(this, animeList)
+            }
         }
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
-        addButton.setOnClickListener {
-            val title = input.text.toString().trim()
-            if (title.isNotEmpty()) {
-                animeList.add(title)
-                adapter.notifyItemInserted(animeList.size - 1)
-                recycler.scrollToPosition(animeList.size - 1)
-                input.text.clear()
-                saveAnime()
-            }
+        searchButton.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
         }
-
         awardsButton.setOnClickListener {
             startActivity(Intent(this, CategoriesActivity::class.java))
         }
     }
 
-    private fun saveAnime() {
-        val array = JSONArray()
-        animeList.forEach { array.put(it) }
-        getSharedPreferences("anime_prefs", Context.MODE_PRIVATE)
-            .edit()
-            .putString("anime_list", array.toString())
-            .apply()
+    override fun onResume() {
+        super.onResume()
+        animeList.clear()
+        animeList.addAll(Storage.getAnime(this))
+        adapter.notifyDataSetChanged()
     }
-
-    private fun loadAnime() {
-        val json = getSharedPreferences("anime_prefs", Context.MODE_PRIVATE)
-            .getString("anime_list", null) ?: return
-        val array = JSONArray(json)
-        for (i in 0 until array.length()) {
-            animeList.add(array.getString(i))
-        }
-    }
-}
-
-class AnimeAdapter(
-    private val items: List<String>,
-    private val onDelete: (Int) -> Unit
-) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView = view.findViewById(R.id.animeTitle)
-        val delete: TextView = view.findViewById(R.id.deleteButton)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_anime, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = items[position]
-        holder.delete.setOnClickListener {
-            val pos = holder.bindingAdapterPosition
-            if (pos != RecyclerView.NO_POSITION) onDelete(pos)
-        }
-    }
-
-    override fun getItemCount() = items.size
 }

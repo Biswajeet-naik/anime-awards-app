@@ -30,7 +30,7 @@ class CategoriesActivity : AppCompatActivity() {
     private fun refresh() {
         val rows = Storage.CATEGORIES.map { category ->
             val winner = Storage.getWinner(this, category)
-            if (winner != null) "$category\n🏆 $winner" else category
+            if (winner != null) "$category\n🏆 ${winner.title}" else category
         }
         listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, rows)
     }
