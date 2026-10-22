@@ -1,6 +1,7 @@
 package com.biswajeet.animeawards
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val input: EditText = findViewById(R.id.animeInput)
         val addButton: Button = findViewById(R.id.addButton)
+        val awardsButton: Button = findViewById(R.id.awardsButton)
         val recycler: RecyclerView = findViewById(R.id.animeRecycler)
 
         adapter = AnimeAdapter(animeList) { position ->
@@ -46,6 +48,10 @@ class MainActivity : AppCompatActivity() {
                 input.text.clear()
                 saveAnime()
             }
+        }
+
+        awardsButton.setOnClickListener {
+            startActivity(Intent(this, CategoriesActivity::class.java))
         }
     }
 

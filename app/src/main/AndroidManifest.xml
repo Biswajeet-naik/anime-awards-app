@@ -15,5 +15,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CategoriesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".CategoryDetailActivity"
+            android:exported="false" />
+
     </application>
 </manifest>
