@@ -45,7 +45,7 @@ object MalImport {
             } catch (e: ImportException) {
                 error = e.message
             } catch (e: Exception) {
-                error = "Couldn't finish the import. Check your internet and try again."
+                error = "Import failed: " + e.javaClass.simpleName + " - " + e.message
             }
             main.post { onDone(result, error) }
         }.start()
