@@ -12,6 +12,7 @@ class CategoryDetailActivity : AppCompatActivity() {
 
     private lateinit var category: String
     private lateinit var listView: ListView
+    private var year = 0
     private var candidates: List<Anime> = emptyList()
     private var genre: String? = null
 
@@ -20,26 +21,27 @@ class CategoryDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_category_detail)
 
         category = intent.getStringExtra("category") ?: "Award"
+        year = intent.getIntExtra("year", Storage.currentYear())
         genre = Storage.GENRE_CATEGORIES[category]
-        findViewById<TextView>(R.id.categoryTitle).text = category
+        findViewById<TextView>(R.id.categoryTitle).text = "$category · $year"
 
-        val all = Storage.getAnime(this)
+        val all = Storage.getAnimeForYear(this, year)
         val g = genre
         candidates = if (g != null) all.filter { g in it.genres } else all
 
         val hint: TextView = findViewById(R.id.hintText)
         hint.text = if (g != null) {
-            "Every $g anime you added is nominated automatically. Tap one to pick the winner."
+            "Every $g anime from $year in your list is nominated automatically. Tap one to pick the winner."
         } else {
-            "Tap an anime to nominate it or pick the winner."
+            "Tap an anime from $year to nominate it or pick the winner."
         }
 
         val emptyText: TextView = findViewById(R.id.emptyText)
         if (candidates.isEmpty()) {
             emptyText.text = if (g != null) {
-                "No $g anime yet. Add some with Search & Add."
+                "No $g anime from $year in your list yet."
             } else {
-                "No anime yet. Add some with Search & Add."
+                "No anime from $year in your list yet. Add some with Search & Add or import."
             }
             emptyText.visibility = View.VISIBLE
         }
@@ -53,8 +55,8 @@ class CategoryDetailActivity : AppCompatActivity() {
     }
 
     private fun refresh() {
-        val nominees = Storage.getNominees(this, category)
-        val winner = Storage.getWinner(this, category)
+        val nominees = Storage.getNominees(this, category, year)
+        val winner = Storage.getWinner(this, category, year)
         val rows = candidates.map { anime ->
             when {
                 anime.id == winner?.id -> "🏆  ${anime.title}  (Winner)"
@@ -66,7 +68,7 @@ class CategoryDetailActivity : AppCompatActivity() {
     }
 
     private fun showOptions(anime: Anime) {
-        val winner = Storage.getWinner(this, category)
+        val winner = Storage.getWinner(this, category, year)
         val isWinner = winner?.id == anime.id
 
         // Genre categories: everyone is already nominated, so only the winner can be chosen.
@@ -75,7 +77,7 @@ class CategoryDetailActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle(anime.title)
                 .setItems(options) { _, _ ->
-                    Storage.setWinner(this, category, if (isWinner) null else anime.id)
+                    Storage.setWinner(this, category, if (isWinner) null else anime.id, year)
                     refresh()
                 }
                 .show()
@@ -83,7 +85,7 @@ class CategoryDetailActivity : AppCompatActivity() {
         }
 
         // Other categories: nominate manually, then pick a winner.
-        val nominees = Storage.getNominees(this, category).toMutableList()
+        val nominees = Storage.getNominees(this, category, year).toMutableList()
         val isNominee = anime.id in nominees
 
         val options = arrayOf(
@@ -98,21 +100,21 @@ class CategoryDetailActivity : AppCompatActivity() {
                     0 -> {
                         if (isNominee) {
                             nominees.remove(anime.id)
-                            if (isWinner) Storage.setWinner(this, category, null)
+                            if (isWinner) Storage.setWinner(this, category, null, year)
                         } else {
                             nominees.add(anime.id)
                         }
-                        Storage.saveNominees(this, category, nominees)
+                        Storage.saveNominees(this, category, nominees, year)
                     }
                     1 -> {
                         if (isWinner) {
-                            Storage.setWinner(this, category, null)
+                            Storage.setWinner(this, category, null, year)
                         } else {
                             if (!isNominee) {
                                 nominees.add(anime.id)
-                                Storage.saveNominees(this, category, nominees)
+                                Storage.saveNominees(this, category, nominees, year)
                             }
-                            Storage.setWinner(this, category, anime.id)
+                            Storage.setWinner(this, category, anime.id, year)
                         }
                     }
                 }

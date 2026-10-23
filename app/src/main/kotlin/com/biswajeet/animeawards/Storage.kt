@@ -3,27 +3,48 @@ package com.biswajeet.animeawards
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Calendar
+
+// One award category. If genre is set, it fills itself from that AniList genre.
+// If genre is null, you nominate by hand.
+data class Category(val name: String, val genre: String? = null)
 
 object Storage {
 
-    val CATEGORIES = listOf(
-        "Best Opening",
-        "Best Ending",
-        "Best Romance",
-        "Best Action",
-        "Best Fantasy",
-        "Anime of the Year"
+    // To add a category, add one line here. To remove one, delete its line.
+    val ALL_CATEGORIES = listOf(
+        Category("Best Opening"),
+        Category("Best Ending"),
+        Category("Best Character"),
+        Category("Best Soundtrack"),
+        Category("Best Animation"),
+        Category("Best Romance", "Romance"),
+        Category("Best Action", "Action"),
+        Category("Best Fantasy", "Fantasy"),
+        Category("Best Comedy", "Comedy"),
+        Category("Best Drama", "Drama"),
+        Category("Best Sci-Fi", "Sci-Fi"),
+        Category("Best Slice of Life", "Slice of Life"),
+        Category("Most Underrated"),
+        Category("Biggest Disappointment"),
+        Category("Anime of the Year")
     )
 
+    val CATEGORIES: List<String> = ALL_CATEGORIES.map { it.name }
+
     // Categories that fill themselves from the anime's genres.
-    val GENRE_CATEGORIES = mapOf(
-        "Best Romance" to "Romance",
-        "Best Action" to "Action",
-        "Best Fantasy" to "Fantasy"
-    )
+    val GENRE_CATEGORIES: Map<String, String> =
+        ALL_CATEGORIES.mapNotNull { c -> c.genre?.let { c.name to it } }.toMap()
+
+    // Picks you made before years existed are treated as this year's.
+    private const val LEGACY_YEAR = 2026
+
+    fun currentYear(): Int = Calendar.getInstance().get(Calendar.YEAR)
 
     private fun prefs(context: Context) =
         context.getSharedPreferences("anime_prefs", Context.MODE_PRIVATE)
+
+    // ---------- Anime list ----------
 
     fun getAnime(context: Context): List<Anime> {
         val json = prefs(context).getString("anime_v2", null) ?: return emptyList()
@@ -70,9 +91,46 @@ object Storage {
         return true
     }
 
-    fun getNominees(context: Context, category: String): List<Int> {
-        val validIds = getAnime(context).map { it.id }
-        val json = prefs(context).getString("nominees2_$category", null) ?: return emptyList()
+    // ---------- Release years (AniList id -> year the anime came out) ----------
+
+    fun getYears(context: Context): Map<Int, Int> {
+        val json = prefs(context).getString("release_years", null) ?: return emptyMap()
+        val obj = JSONObject(json)
+        val map = mutableMapOf<Int, Int>()
+        obj.keys().forEach { key -> map[key.toInt()] = obj.getInt(key) }
+        return map
+    }
+
+    fun saveYears(context: Context, map: Map<Int, Int>) {
+        val obj = JSONObject()
+        map.forEach { (id, year) -> obj.put(id.toString(), year) }
+        prefs(context).edit().putString("release_years", obj.toString()).apply()
+    }
+
+    // Only the anime that came out in the given year.
+    fun getAnimeForYear(context: Context, year: Int): List<Anime> {
+        val years = getYears(context)
+        return getAnime(context).filter { years[it.id] == year }
+    }
+
+    // Years shown in the switcher (newest first). Always includes this year.
+    fun yearsAvailable(context: Context): List<Int> {
+        val inList = getAnime(context).map { it.id }.toSet()
+        val years = getYears(context).filterKeys { it in inList }.values.filter { it > 0 }
+        return (years + currentYear()).distinct().sortedDescending()
+    }
+
+    // ---------- Nominees and winners (saved per year) ----------
+
+    private fun nomineesKey(category: String, year: Int) =
+        if (year == LEGACY_YEAR) "nominees2_$category" else "nominees3_${year}_$category"
+
+    private fun winnerKey(category: String, year: Int) =
+        if (year == LEGACY_YEAR) "winner2_$category" else "winner3_${year}_$category"
+
+    fun getNominees(context: Context, category: String, year: Int = currentYear()): List<Int> {
+        val validIds = getAnimeForYear(context, year).map { it.id }
+        val json = prefs(context).getString(nomineesKey(category, year), null) ?: return emptyList()
         val array = JSONArray(json)
         val ids = mutableListOf<Int>()
         for (i in 0 until array.length()) {
@@ -82,24 +140,24 @@ object Storage {
         return ids
     }
 
-    fun saveNominees(context: Context, category: String, ids: List<Int>) {
+    fun saveNominees(context: Context, category: String, ids: List<Int>, year: Int = currentYear()) {
         val array = JSONArray()
         ids.forEach { array.put(it) }
-        prefs(context).edit().putString("nominees2_$category", array.toString()).apply()
+        prefs(context).edit().putString(nomineesKey(category, year), array.toString()).apply()
     }
 
-    fun getWinner(context: Context, category: String): Anime? {
-        val id = prefs(context).getInt("winner2_$category", -1)
+    fun getWinner(context: Context, category: String, year: Int = currentYear()): Anime? {
+        val id = prefs(context).getInt(winnerKey(category, year), -1)
         if (id == -1) return null
-        return getAnime(context).firstOrNull { it.id == id }
+        return getAnimeForYear(context, year).firstOrNull { it.id == id }
     }
 
-    fun setWinner(context: Context, category: String, id: Int?) {
+    fun setWinner(context: Context, category: String, id: Int?, year: Int = currentYear()) {
         val editor = prefs(context).edit()
         if (id == null) {
-            editor.remove("winner2_$category")
+            editor.remove(winnerKey(category, year))
         } else {
-            editor.putInt("winner2_$category", id)
+            editor.putInt(winnerKey(category, year), id)
         }
         editor.apply()
     }
