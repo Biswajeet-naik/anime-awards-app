@@ -13,7 +13,8 @@ class CategoryDetailActivity : AppCompatActivity() {
     private lateinit var category: String
     private lateinit var listView: ListView
     private var year = 0
-    private var candidates: List<Anime> = emptyList()
+    private var allAnime: List<Anime> = emptyList()
+    private var display: List<Anime> = emptyList()
     private var genre: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,30 +26,26 @@ class CategoryDetailActivity : AppCompatActivity() {
         genre = Storage.GENRE_CATEGORIES[category]
         findViewById<TextView>(R.id.categoryTitle).text = "$category · $year"
 
-        val all = Storage.getAnimeForYear(this, year)
+        // Every anime released this year can be nominated in any category.
+        allAnime = Storage.getAnimeForYear(this, year)
         val g = genre
-        candidates = if (g != null) all.filter { g in it.genres } else all
 
         val hint: TextView = findViewById(R.id.hintText)
         hint.text = if (g != null) {
-            "Every $g anime from $year in your list is nominated automatically. Tap one to pick the winner."
+            "Tap an anime from $year to nominate it or pick the winner. $g anime are listed first."
         } else {
             "Tap an anime from $year to nominate it or pick the winner."
         }
 
         val emptyText: TextView = findViewById(R.id.emptyText)
-        if (candidates.isEmpty()) {
-            emptyText.text = if (g != null) {
-                "No $g anime from $year in your list yet."
-            } else {
-                "No anime from $year in your list yet. Add some with Search & Add or import."
-            }
+        if (allAnime.isEmpty()) {
+            emptyText.text = "No anime from $year in your list yet. Add some with Search & Add or import."
             emptyText.visibility = View.VISIBLE
         }
 
         listView = findViewById(R.id.animeChoiceList)
         listView.setOnItemClickListener { _, _, position, _ ->
-            showOptions(candidates[position])
+            showOptions(display[position])
         }
 
         refresh()
@@ -57,10 +54,23 @@ class CategoryDetailActivity : AppCompatActivity() {
     private fun refresh() {
         val nominees = Storage.getNominees(this, category, year)
         val winner = Storage.getWinner(this, category, year)
-        val rows = candidates.map { anime ->
-            when {
-                anime.id == winner?.id -> "🏆  ${anime.title}  (Winner)"
-                genre != null || anime.id in nominees -> "⭐  ${anime.title}  (Nominee)"
+        val g = genre
+
+        // 0 = winner, 1 = nominees, 2 = genre matches, 3 = everything else
+        fun rank(anime: Anime): Int = when {
+            anime.id == winner?.id -> 0
+            anime.id in nominees -> 1
+            g != null && g in anime.genres -> 2
+            else -> 3
+        }
+
+        display = allAnime.sortedBy { rank(it) }
+
+        val rows = display.map { anime ->
+            when (rank(anime)) {
+                0 -> "🏆  ${anime.title}  (Winner)"
+                1 -> "⭐  ${anime.title}  (Nominee)"
+                2 -> "${anime.title}  · $g"
                 else -> anime.title
             }
         }
@@ -71,20 +81,6 @@ class CategoryDetailActivity : AppCompatActivity() {
         val winner = Storage.getWinner(this, category, year)
         val isWinner = winner?.id == anime.id
 
-        // Genre categories: everyone is already nominated, so only the winner can be chosen.
-        if (genre != null) {
-            val options = arrayOf(if (isWinner) "Remove winner status" else "Make winner")
-            AlertDialog.Builder(this)
-                .setTitle(anime.title)
-                .setItems(options) { _, _ ->
-                    Storage.setWinner(this, category, if (isWinner) null else anime.id, year)
-                    refresh()
-                }
-                .show()
-            return
-        }
-
-        // Other categories: nominate manually, then pick a winner.
         val nominees = Storage.getNominees(this, category, year).toMutableList()
         val isNominee = anime.id in nominees
 
