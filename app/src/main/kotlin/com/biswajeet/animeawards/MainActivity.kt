@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refresh() {
-        val years = Storage.yearsAvailable(this).toList().sorted()
+        // Newest year first, so the arrow after "All" goes to the newest year
+        val years = Storage.yearsAvailable(this).toList().sortedDescending()
         options = listOf(0) + years
         if (selectedYear !in options) selectedYear = 0
 
