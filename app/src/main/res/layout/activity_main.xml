@@ -26,6 +26,12 @@
         android:text="Search &amp; Add Anime 🔍" />
 
     <Button
+        android:id="@+id/importButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Import from MyAnimeList 📥" />
+
+    <Button
         android:id="@+id/awardsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

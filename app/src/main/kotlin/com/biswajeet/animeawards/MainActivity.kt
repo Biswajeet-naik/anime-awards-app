@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         val recycler: RecyclerView = findViewById(R.id.animeRecycler)
         val searchButton: Button = findViewById(R.id.searchButton)
+        val importButton: Button = findViewById(R.id.importButton)
         val awardsButton: Button = findViewById(R.id.awardsButton)
 
         adapter = AnimeAdapter(animeList, "✕") { anime ->
@@ -33,6 +34,9 @@ class MainActivity : AppCompatActivity() {
 
         searchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
+        }
+        importButton.setOnClickListener {
+            startActivity(Intent(this, ImportActivity::class.java))
         }
         awardsButton.setOnClickListener {
             startActivity(Intent(this, CategoriesActivity::class.java))
