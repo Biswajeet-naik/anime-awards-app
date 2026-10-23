@@ -3,6 +3,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Comes from the GitHub secret MAL_CLIENT_ID during the Actions build.
+val malClientId: String = System.getenv("MAL_CLIENT_ID") ?: ""
+
 android {
     namespace = "com.biswajeet.animeawards"
     compileSdk = 34
@@ -13,6 +16,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "MAL_CLIENT_ID", "\"$malClientId\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {

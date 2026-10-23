@@ -1,45 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Import from MyAnimeList"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Imports your Completed anime. Your MAL list must be public." />
-
-    <EditText
-        android:id="@+id/usernameInput"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="MyAnimeList username"
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        android:maxLines="1" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/importGoButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Import my list" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Import from MyAnimeList"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/importStatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"
-        android:visibility="gone" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Imports your Completed anime. Your MAL list must be public." />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/usernameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="MyAnimeList username"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/yearInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Year finished (empty = all years)"
+            android:inputType="number"
+            android:maxLength="4"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/importGoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Import my list" />
+
+        <TextView
+            android:id="@+id/importStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Backup: if the import above can't reach MyAnimeList, download your list file at myanimelist.net/panel.php?go=export and pick it here (the year box above still applies)." />
+
+        <Button
+            android:id="@+id/chooseFileButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Import from a file instead" />
+
+    </LinearLayout>
+</ScrollView>
