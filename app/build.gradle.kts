@@ -20,6 +20,16 @@ android {
         buildConfigField("String", "MAL_CLIENT_ID", "\"$malClientId\"")
     }
 
+    // Same signing key on every build, so new APKs install as updates.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }
