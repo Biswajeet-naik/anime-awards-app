@@ -9,18 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="My Anime"
-        android:textSize="24sp"
+        android:textColor="@color/glass_text"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_glass_card"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp">
 
         <Button
             android:id="@+id/mainPrevYear"
+            style="@style/Widget.Glass.Arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="◀" />
@@ -32,11 +36,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="All"
+            android:textColor="@color/glass_text"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/mainNextYear"
+            style="@style/Widget.Glass.Arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="▶" />
@@ -46,32 +52,68 @@
         android:id="@+id/mainCountText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="" />
+        android:textColor="@color/glass_muted"
+        android:textSize="13sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/animeRecycler"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/animeRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="24dp"
+            android:text="Nothing here yet.\nTap Search or Import to add anime."
+            android:textColor="@color/glass_muted"
+            android:textSize="15sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_weight="1" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search &amp; Add Anime 🔍" />
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:text="🔍 Search"
+            android:textSize="13sp" />
 
-    <Button
-        android:id="@+id/importButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Import from MyAnimeList 📥" />
+        <Button
+            android:id="@+id/importButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:text="📥 Import"
+            android:textSize="13sp" />
 
-    <Button
-        android:id="@+id/awardsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Go to Awards 🏆" />
+        <Button
+            android:id="@+id/awardsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="🏆 Awards"
+            android:textSize="13sp" />
+    </LinearLayout>
 
 </LinearLayout>

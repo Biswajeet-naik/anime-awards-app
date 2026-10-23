@@ -2,21 +2,24 @@ package com.biswajeet.animeawards
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
     private val animeList = mutableListOf<Anime>()
-    private lateinit var adapter: AnimeAdapter
+    private lateinit var adapter: PosterGridAdapter
 
     private lateinit var prevYearButton: Button
     private lateinit var nextYearButton: Button
     private lateinit var yearText: TextView
     private lateinit var countText: TextView
+    private lateinit var emptyText: TextView
 
     // 0 means "All"
     private var selectedYear = 0
@@ -34,15 +37,10 @@ class MainActivity : AppCompatActivity() {
         nextYearButton = findViewById(R.id.mainNextYear)
         yearText = findViewById(R.id.mainYearText)
         countText = findViewById(R.id.mainCountText)
+        emptyText = findViewById(R.id.emptyText)
 
-        adapter = AnimeAdapter(animeList, "✕") { anime ->
-            // Remove from the FULL saved list, not just the filtered one
-            val all = Storage.getAnime(this).toMutableList()
-            all.removeAll { it.id == anime.id }
-            Storage.saveAnime(this, all)
-            refresh()
-        }
-        recycler.layoutManager = LinearLayoutManager(this)
+        adapter = PosterGridAdapter(animeList) { anime -> confirmRemove(anime) }
+        recycler.layoutManager = GridLayoutManager(this, 2)
         recycler.adapter = adapter
 
         prevYearButton.setOnClickListener {
@@ -76,6 +74,21 @@ class MainActivity : AppCompatActivity() {
         refresh()
     }
 
+    private fun confirmRemove(anime: Anime) {
+        AlertDialog.Builder(this)
+            .setTitle("Remove ${anime.title}?")
+            .setMessage("It will be removed from your whole list.")
+            .setPositiveButton("Remove") { _, _ ->
+                // Remove from the FULL saved list, not just the filtered one
+                val all = Storage.getAnime(this).toMutableList()
+                all.removeAll { it.id == anime.id }
+                Storage.saveAnime(this, all)
+                refresh()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     private fun refresh() {
         // Newest year first, so the arrow after "All" goes to the newest year
         val years = Storage.yearsAvailable(this).toList().sortedDescending()
@@ -95,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         yearText.text = if (selectedYear == 0) "All" else selectedYear.toString()
         prevYearButton.isEnabled = index > 0
         nextYearButton.isEnabled = index < options.size - 1
+        prevYearButton.alpha = if (prevYearButton.isEnabled) 1f else 0.3f
+        nextYearButton.alpha = if (nextYearButton.isEnabled) 1f else 0.3f
         countText.text = "${animeList.size} anime"
+        emptyText.visibility = if (animeList.isEmpty()) View.VISIBLE else View.GONE
     }
 }

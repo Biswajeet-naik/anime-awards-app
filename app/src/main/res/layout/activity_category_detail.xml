@@ -9,23 +9,27 @@
         android:id="@+id/categoryTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textColor="@color/glass_text"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/hintText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="4dp"
+        android:textColor="@color/glass_muted"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/emptyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textColor="@color/glass_muted"
         android:visibility="gone" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/animeChoiceList"
         android:layout_width="match_parent"
         android:layout_height="0dp"

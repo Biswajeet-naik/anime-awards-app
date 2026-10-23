@@ -2,36 +2,44 @@ package com.biswajeet.animeawards
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class CategoriesActivity : AppCompatActivity() {
 
-    private lateinit var listView: ListView
+    private lateinit var adapter: CategoryAdapter
     private lateinit var yearText: TextView
     private lateinit var statusText: TextView
+    private lateinit var prevButton: Button
+    private lateinit var nextButton: Button
+    private val rows = mutableListOf<CategoryRow>()
     private var year = Storage.currentYear()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories)
 
-        listView = findViewById(R.id.categoryList)
+        val recycler: RecyclerView = findViewById(R.id.categoryList)
         yearText = findViewById(R.id.yearText)
         statusText = findViewById(R.id.statusText)
+        prevButton = findViewById(R.id.prevYear)
+        nextButton = findViewById(R.id.nextYear)
 
-        findViewById<Button>(R.id.prevYear).setOnClickListener { moveYear(1) }
-        findViewById<Button>(R.id.nextYear).setOnClickListener { moveYear(-1) }
-
-        listView.setOnItemClickListener { _, _, position, _ ->
+        adapter = CategoryAdapter(rows) { categoryName ->
             val intent = Intent(this, CategoryDetailActivity::class.java)
-            intent.putExtra("category", Storage.CATEGORIES[position])
+            intent.putExtra("category", categoryName)
             intent.putExtra("year", year)
             startActivity(intent)
         }
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = adapter
+
+        // Same as the My Anime screen: ◀ goes to a newer year, ▶ goes to an older year
+        prevButton.setOnClickListener { moveYear(-1) }
+        nextButton.setOnClickListener { moveYear(1) }
     }
 
     override fun onResume() {
@@ -61,14 +69,20 @@ class CategoriesActivity : AppCompatActivity() {
         val years = Storage.yearsAvailable(this)
         if (year !in years) year = Storage.currentYear()
 
+        val index = years.indexOf(year)
+        prevButton.isEnabled = index > 0
+        nextButton.isEnabled = index < years.size - 1
+        prevButton.alpha = if (prevButton.isEnabled) 1f else 0.3f
+        nextButton.alpha = if (nextButton.isEnabled) 1f else 0.3f
+
         yearText.text = year.toString()
         val count = Storage.getAnimeForYear(this, year).size
         statusText.text = "$count anime in your list were released in $year"
 
-        val rows = Storage.CATEGORIES.map { category ->
-            val winner = Storage.getWinner(this, category, year)
-            if (winner != null) "$category\n🏆 ${winner.title}" else category
+        rows.clear()
+        Storage.CATEGORIES.forEach { category ->
+            rows.add(CategoryRow(category, Storage.getWinner(this, category, year)))
         }
-        listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, rows)
+        adapter.notifyDataSetChanged()
     }
 }

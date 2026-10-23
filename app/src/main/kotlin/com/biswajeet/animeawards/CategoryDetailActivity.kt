@@ -2,19 +2,19 @@ package com.biswajeet.animeawards
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class CategoryDetailActivity : AppCompatActivity() {
 
     private lateinit var category: String
-    private lateinit var listView: ListView
+    private lateinit var adapter: NomineeAdapter
     private var year = 0
     private var allAnime: List<Anime> = emptyList()
-    private var display: List<Anime> = emptyList()
+    private val rows = mutableListOf<NomineeRow>()
     private var genre: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +43,10 @@ class CategoryDetailActivity : AppCompatActivity() {
             emptyText.visibility = View.VISIBLE
         }
 
-        listView = findViewById(R.id.animeChoiceList)
-        listView.setOnItemClickListener { _, _, position, _ ->
-            showOptions(display[position])
-        }
+        val recycler: RecyclerView = findViewById(R.id.animeChoiceList)
+        adapter = NomineeAdapter(rows) { anime -> showOptions(anime) }
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = adapter
 
         refresh()
     }
@@ -64,17 +64,18 @@ class CategoryDetailActivity : AppCompatActivity() {
             else -> 3
         }
 
-        display = allAnime.sortedBy { rank(it) }
-
-        val rows = display.map { anime ->
-            when (rank(anime)) {
-                0 -> "🏆  ${anime.title}  (Winner)"
-                1 -> "⭐  ${anime.title}  (Nominee)"
-                2 -> "${anime.title}  · $g"
-                else -> anime.title
+        rows.clear()
+        allAnime.sortedBy { rank(it) }.forEach { anime ->
+            val r = rank(anime)
+            val label = when (r) {
+                0 -> "🏆 Winner"
+                1 -> "⭐ Nominee"
+                2 -> g ?: ""
+                else -> ""
             }
+            rows.add(NomineeRow(anime, r, label))
         }
-        listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, rows)
+        adapter.notifyDataSetChanged()
     }
 
     private fun showOptions(anime: Anime) {

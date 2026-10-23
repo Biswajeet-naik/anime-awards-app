@@ -9,32 +9,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Awards 🏆"
-        android:textSize="24sp"
+        android:textColor="@color/glass_text"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_glass_card"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="6dp">
 
         <Button
             android:id="@+id/prevYear"
+            style="@style/Widget.Glass.Arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="◀" />
 
         <TextView
             android:id="@+id/yearText"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
+            android:textColor="@color/glass_text"
             android:textSize="22sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/nextYear"
+            style="@style/Widget.Glass.Arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="▶" />
@@ -44,14 +51,16 @@
         android:id="@+id/statusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center" />
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@color/glass_muted"
+        android:textSize="13sp" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoryList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_weight="1" />
 
 </LinearLayout>
