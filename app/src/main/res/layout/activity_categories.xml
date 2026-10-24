@@ -1,66 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/ed_charcoal">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="104dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Cover: vertical label, title, giant year, year switcher -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="18dp"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false">
+
+                        <TextView
+                            style="@style/Ed.Label"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:rotation="-90"
+                            android:singleLine="true"
+                            android:text="Anime awards — Programme"
+                            android:textColor="@color/ed_lavender"
+                            android:textSize="10sp" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="6dp">
+
+                        <TextView
+                            style="@style/Ed.Display"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AWARDS"
+                            android:textColor="@color/ed_ivory"
+                            android:textSize="60sp" />
+
+                        <TextView
+                            android:id="@+id/yearText"
+                            style="@style/Ed.Display"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-6dp"
+                            android:maxLines="1"
+                            android:textColor="@color/ed_ivory"
+                            android:textSize="112sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@color/ed_ivory" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/prevYear"
+                        style="@style/Ed.Arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Newer year"
+                        android:text="←" />
+
+                    <TextView
+                        style="@style/Ed.Label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Release year" />
+
+                    <Button
+                        android:id="@+id/nextYear"
+                        style="@style/Ed.Arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Older year"
+                        android:text="→" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/statusText"
+                    style="@style/Ed.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="3dp"
+                    android:textAllCaps="false"
+                    android:letterSpacing="0.02"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Ivory programme section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/ed_ivory"
+                android:clipChildren="false"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="18dp">
+
+                <FrameLayout
+                    android:layout_width="18dp"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false">
+
+                    <TextView
+                        style="@style/Ed.Label"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:rotation="-90"
+                        android:singleLine="true"
+                        android:text="Fig. 01 — Year in numbers"
+                        android:textColor="@color/ed_ink_muted"
+                        android:textSize="10sp" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="6dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/countText"
+                            style="@style/Ed.Display"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/ed_ink"
+                            android:textSize="100sp" />
+
+                        <TextView
+                            android:id="@+id/countLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:paddingBottom="8dp"
+                            android:textColor="@color/ed_ink"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/ed_ink" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/winnersText"
+                                style="@style/Ed.Display"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/ed_ink"
+                                android:textSize="30sp" />
+
+                            <TextView
+                                style="@style/Ed.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Winners"
+                                android:textColor="@color/ed_ink_muted" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@color/ed_ink" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/nominationsText"
+                                style="@style/Ed.Display"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/ed_ink"
+                                android:textSize="30sp" />
+
+                            <TextView
+                                style="@style/Ed.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Nominations"
+                                android:textColor="@color/ed_ink_muted" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/winnersProgress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="12dp"
+                        android:indeterminate="false"
+                        android:maxHeight="3dp"
+                        android:minHeight="3dp"
+                        android:progressDrawable="@drawable/progress_ed" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Category list -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    style="@style/Ed.Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Categories" />
+
+                <TextView
+                    android:id="@+id/categoriesRange"
+                    style="@style/Ed.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/ed_line" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Floating navigation -->
     <TextView
+        android:id="@+id/backButton"
+        style="@style/Ed.Label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Awards 🏆"
-        android:textColor="@color/glass_text"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_glass_card"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <Button
-            android:id="@+id/prevYear"
-            style="@style/Widget.Glass.Arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="◀" />
-
-        <TextView
-            android:id="@+id/yearText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/glass_text"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/nextYear"
-            style="@style/Widget.Glass.Arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▶" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_ed_pill"
+        android:clickable="true"
+        android:contentDescription="Back to My Anime"
+        android:focusable="true"
         android:gravity="center"
-        android:textColor="@color/glass_muted"
-        android:textSize="13sp" />
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
+        android:text="←   My anime"
+        android:textColor="@color/ed_ivory"
+        android:textSize="12sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categoryList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="1" />
-
-</LinearLayout>
+</FrameLayout>

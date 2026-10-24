@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ed_charcoal">#111114</color>
+    <color name="ed_ivory">#F0EDE5</color>
+    <color name="ed_lavender">#C6ADFA</color>
+    <color name="ed_line">#34343B</color>
+    <color name="ed_muted">#8D8A96</color>
+    <color name="ed_dim">#605D6B</color>
+    <color name="ed_ink">#111114</color>
+    <color name="ed_ink_muted">#5B5963</color>
+    <color name="ed_track">#CFCABE</color>
+    <color name="ed_slot">#26242F</color>
+    <color name="ed_pill_fill">#CC17171B</color>
+    <color name="ed_pill_stroke">#47F0EDE5</color>
+
+    <style name="Ed.Label">
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.16</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ed_muted</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Ed.Display">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">-0.03</item>
+    </style>
+
+    <style name="Ed.Arrow" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/ed_ivory</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minWidth">56dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+</resources>
