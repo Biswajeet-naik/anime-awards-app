@@ -4,9 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val root: View = findViewById(R.id.mainRoot)
+        val content: View = findViewById(R.id.mainContent)
         val recycler: RecyclerView = findViewById(R.id.animeRecycler)
         val searchButton: Button = findViewById(R.id.searchButton)
         val importButton: Button = findViewById(R.id.importButton)
@@ -38,6 +43,25 @@ class MainActivity : AppCompatActivity() {
         yearText = findViewById(R.id.mainYearText)
         countText = findViewById(R.id.mainCountText)
         emptyText = findViewById(R.id.emptyText)
+
+        // Keep the header below the status bar, and keep the last row
+        // of posters scrollable above the floating Awards pill.
+        val pillBaseMargin = (awardsButton.layoutParams as FrameLayout.LayoutParams).bottomMargin
+        val listBasePadding = recycler.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            content.setPadding(0, bars.top, 0, 0)
+            val lp = awardsButton.layoutParams as FrameLayout.LayoutParams
+            lp.bottomMargin = pillBaseMargin + bars.bottom
+            awardsButton.layoutParams = lp
+            recycler.setPadding(
+                recycler.paddingLeft,
+                recycler.paddingTop,
+                recycler.paddingRight,
+                listBasePadding + bars.bottom
+            )
+            insets
+        }
 
         adapter = PosterGridAdapter(animeList) { anime -> confirmRemove(anime) }
         recycler.layoutManager = GridLayoutManager(this, 2)

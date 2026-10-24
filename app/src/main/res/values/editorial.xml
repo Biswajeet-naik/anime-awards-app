@@ -36,4 +36,28 @@
         <item name="android:minWidth">56dp</item>
         <item name="android:minHeight">48dp</item>
     </style>
+
+    <style name="Ed.Action" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/ed_ivory</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.16</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">44dp</item>
+    </style>
+
+    <style name="Ed.Pill" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_ed_pill</item>
+        <item name="android:textColor">@color/ed_ivory</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.16</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
 </resources>
