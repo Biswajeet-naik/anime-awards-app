@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -29,7 +30,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -39,23 +40,22 @@
                 style="@style/Ed.Display"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hyphenationFrequency="none"
                 android:letterSpacing="0.01"
                 android:maxLines="2"
                 android:textAllCaps="true"
                 android:textColor="@color/ed_ivory"
-                android:textSize="23sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                app:autoSizeMaxTextSize="23sp"
+                app:autoSizeMinTextSize="15sp"
+                app:autoSizeStepGranularity="1sp"
+                app:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/winnerLabel"
                 style="@style/Ed.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp" />
+                android:layout_marginTop="8dp" />
 
             <TextView
                 android:id="@+id/winnerText"

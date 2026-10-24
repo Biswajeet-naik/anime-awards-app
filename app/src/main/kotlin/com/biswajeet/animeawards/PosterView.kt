@@ -1,13 +1,10 @@
 package com.biswajeet.animeawards
 
 import android.content.Context
-import android.graphics.Outline
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewOutlineProvider
 import androidx.appcompat.widget.AppCompatImageView
 
-// An image with rounded corners.
+// A square-cornered image, like a printed photograph.
 // If its height is wrap_content, it makes itself poster-shaped (taller than wide).
 class PosterView @JvmOverloads constructor(
     context: Context,
@@ -15,17 +12,9 @@ class PosterView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private val radius = 12f * resources.displayMetrics.density
-
     init {
         scaleType = ScaleType.CENTER_CROP
         setBackgroundColor(0x22FFFFFF)
-        outlineProvider = object : ViewOutlineProvider() {
-            override fun getOutline(view: View, outline: Outline) {
-                outline.setRoundRect(0, 0, view.width, view.height, radius)
-            }
-        }
-        clipToOutline = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
