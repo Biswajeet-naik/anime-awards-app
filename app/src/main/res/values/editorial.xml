@@ -13,7 +13,7 @@
     <color name="ed_pill_fill">#CC17171B</color>
     <color name="ed_pill_stroke">#47F0EDE5</color>
 
-    <style name="Ed.Label">
+    <style name="Ed.Label" parent="">
         <item name="android:textSize">11sp</item>
         <item name="android:letterSpacing">0.16</item>
         <item name="android:textAllCaps">true</item>
@@ -22,7 +22,7 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
-    <style name="Ed.Display">
+    <style name="Ed.Display" parent="">
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textStyle">bold</item>
         <item name="android:includeFontPadding">false</item>
