@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    android:background="@drawable/bg_glass_card"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -19,15 +17,12 @@
 
         <TextView
             android:id="@+id/removeButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="top|end"
             android:layout_margin="6dp"
-            android:background="@drawable/bg_close_badge"
-            android:gravity="center"
-            android:text="✕"
-            android:textColor="@color/glass_text"
-            android:textSize="14sp" />
+            android:background="@drawable/bg_ed_delete"
+            android:contentDescription="Remove" />
     </FrameLayout>
 
     <TextView
@@ -36,8 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-condensed"
+        android:letterSpacing="0.02"
         android:maxLines="2"
-        android:textColor="@color/glass_text"
+        android:textAllCaps="true"
+        android:textColor="#F0EDE5"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -48,7 +46,7 @@
         android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/glass_muted"
+        android:textColor="#8A8A90"
         android:textSize="11sp" />
 
 </LinearLayout>
