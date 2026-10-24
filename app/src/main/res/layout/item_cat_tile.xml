@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:background="@drawable/bg_cat_tile"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.biswajeet.animeawards.PosterView
+            android:id="@+id/tilePoster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="Poster" />
+
+        <TextView
+            android:id="@+id/tileMark"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_cat_mark"
+            android:gravity="center"
+            android:text="✓"
+            android:textColor="@color/ed_ink"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="5dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:id="@+id/tileLabel"
+            style="@style/Ed.Label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tileTitle"
+            style="@style/Ed.Display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:letterSpacing="0.02"
+            android:maxLines="2"
+            android:minLines="2"
+            android:textAllCaps="true"
+            android:textColor="@color/ed_ivory"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

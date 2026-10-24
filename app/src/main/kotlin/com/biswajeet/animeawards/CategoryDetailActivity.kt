@@ -1,11 +1,10 @@
 package com.biswajeet.animeawards
 
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoryDetailActivity : AppCompatActivity() {
@@ -13,8 +12,9 @@ class CategoryDetailActivity : AppCompatActivity() {
     private lateinit var category: String
     private lateinit var adapter: NomineeAdapter
     private var year = 0
+    private var number = -1
     private var allAnime: List<Anime> = emptyList()
-    private val rows = mutableListOf<NomineeRow>()
+    private val items = mutableListOf<CatItem>()
     private var genre: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,31 +23,32 @@ class CategoryDetailActivity : AppCompatActivity() {
 
         category = intent.getStringExtra("category") ?: "Award"
         year = intent.getIntExtra("year", Storage.currentYear())
+        // Optional: the Awards screen can pass the category's number (1, 2, 3...)
+        number = intent.getIntExtra("number", -1)
         genre = Storage.GENRE_CATEGORIES[category]
-        findViewById<TextView>(R.id.categoryTitle).text = "$category · $year"
 
         // Every anime released this year can be nominated in any category.
         allAnime = Storage.getAnimeForYear(this, year)
-        val g = genre
-
-        val hint: TextView = findViewById(R.id.hintText)
-        hint.text = if (g != null) {
-            "Tap an anime from $year to nominate it or pick the winner. $g anime are listed first."
-        } else {
-            "Tap an anime from $year to nominate it or pick the winner."
-        }
-
-        val emptyText: TextView = findViewById(R.id.emptyText)
-        if (allAnime.isEmpty()) {
-            emptyText.text = "No anime from $year in your list yet. Add some with Search & Add or import."
-            emptyText.visibility = View.VISIBLE
-        }
 
         val recycler: RecyclerView = findViewById(R.id.animeChoiceList)
-        adapter = NomineeAdapter(rows) { anime -> showOptions(anime) }
-        recycler.layoutManager = LinearLayoutManager(this)
+        adapter = NomineeAdapter(items, { anime -> showOptions(anime) }, { removeWinner() })
+
+        // Tiles take 1 of 2 columns; headers, winner panel and sections take both.
+        val grid = GridLayoutManager(this, 2)
+        grid.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int =
+                if (items.getOrNull(position) is CatItem.Tile) 1 else 2
+        }
+        recycler.layoutManager = grid
         recycler.adapter = adapter
 
+        findViewById<Button>(R.id.backButton).setOnClickListener { finish() }
+
+        refresh()
+    }
+
+    private fun removeWinner() {
+        Storage.setWinner(this, category, null, year)
         refresh()
     }
 
@@ -64,17 +65,45 @@ class CategoryDetailActivity : AppCompatActivity() {
             else -> 3
         }
 
-        rows.clear()
-        allAnime.sortedBy { rank(it) }.forEach { anime ->
-            val r = rank(anime)
-            val label = when (r) {
-                0 -> "🏆 Winner"
-                1 -> "⭐ Nominee"
-                2 -> g ?: ""
-                else -> ""
-            }
-            rows.add(NomineeRow(anime, r, label))
+        val sorted = allAnime.sortedBy { rank(it) }
+
+        items.clear()
+        items.add(CatItem.Header(year, number, category, nominees.size, allAnime.size))
+        items.add(CatItem.Winner(winner))
+
+        val hint = when {
+            allAnime.isEmpty() ->
+                "No anime from $year in your list yet. Add some with Search & Add or import."
+            g != null ->
+                "Tap an anime from $year to nominate it or pick the winner. $g anime are listed first."
+            else ->
+                "Tap an anime from $year to nominate it or pick the winner."
         }
+        items.add(CatItem.Note(hint))
+
+        val nomineeAnime = sorted.filter { rank(it) == 1 }
+        if (nomineeAnime.isNotEmpty()) {
+            items.add(
+                CatItem.Section(
+                    if (winner != null) "Other nominees" else "Nominees",
+                    nomineeAnime.size
+                )
+            )
+            nomineeAnime.forEachIndexed { i, anime ->
+                items.add(CatItem.Tile(NomineeRow(anime, 1, ""), i + 1))
+            }
+        }
+
+        val rest = sorted.filter { rank(it) >= 2 }
+        if (rest.isNotEmpty()) {
+            items.add(CatItem.Section("All anime from $year", rest.size))
+            rest.forEach { anime ->
+                val r = rank(anime)
+                val label = if (r == 2) (g ?: "") else ""
+                items.add(CatItem.Tile(NomineeRow(anime, r, label), 0))
+            }
+        }
+
         adapter.notifyDataSetChanged()
     }
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="124dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginEnd="6dp"
+    android:padding="1dp">
+
+    <ImageView
+        android:id="@+id/winnerArt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Winner artwork"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/winnerShade"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A0111114" />
+
+    <TextView
+        android:id="@+id/winnerLabel"
+        style="@style/Ed.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/ed_lavender" />
+
+    <TextView
+        android:id="@+id/winnerTitle"
+        style="@style/Ed.Display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="12dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAllCaps="true"
+        android:textColor="@color/ed_ivory"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/winnerRemove"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_cat_x"
+        android:contentDescription="Remove winner"
+        android:gravity="center"
+        android:text="✕"
+        android:textColor="@color/ed_ivory"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+</FrameLayout>
