@@ -41,6 +41,14 @@ class CategoryAdapter(
         return ViewHolder(view)
     }
 
+    private fun setPosterSize(poster: ImageView, widthDp: Int, heightDp: Int) {
+        val density = poster.resources.displayMetrics.density
+        val lp = poster.layoutParams
+        lp.width = (widthDp * density).toInt()
+        lp.height = (heightDp * density).toInt()
+        poster.layoutParams = lp
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val row = items[position]
@@ -54,6 +62,8 @@ class CategoryAdapter(
 
         val winner = row.winner
         if (winner != null) {
+            // Full-size poster for winners.
+            setPosterSize(holder.winnerPoster, 62, 93)
             holder.number.setTextColor(lavender)
             holder.winnerLabel.text = "Winner"
             holder.winnerLabel.setTextColor(lavender)
@@ -63,6 +73,8 @@ class CategoryAdapter(
             holder.winnerPoster.contentDescription = "Poster: ${winner.title}"
             Glide.with(holder.winnerPoster).load(winner.coverUrl).into(holder.winnerPoster)
         } else {
+            // Small empty frame when there is no winner yet.
+            setPosterSize(holder.winnerPoster, 43, 64)
             holder.number.setTextColor(dim)
             holder.winnerLabel.text = "No winner yet"
             holder.winnerLabel.setTextColor(muted)

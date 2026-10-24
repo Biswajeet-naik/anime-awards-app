@@ -29,7 +29,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="93dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -54,7 +54,8 @@
                 android:id="@+id/winnerLabel"
                 style="@style/Ed.Label"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" />
 
             <TextView
                 android:id="@+id/winnerText"

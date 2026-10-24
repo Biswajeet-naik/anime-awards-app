@@ -10,8 +10,8 @@
     <color name="ed_ink_muted">#5B5963</color>
     <color name="ed_track">#CFCABE</color>
     <color name="ed_slot">#26242F</color>
-    <color name="ed_pill_fill">#CC17171B</color>
-    <color name="ed_pill_stroke">#47F0EDE5</color>
+    <color name="ed_pill_fill">#F21C1C21</color>
+    <color name="ed_pill_stroke">#59F0EDE5</color>
 
     <style name="Ed.Label" parent="">
         <item name="android:textSize">11sp</item>
